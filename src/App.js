@@ -69,7 +69,7 @@ function App() {
                         <label htmlFor="navn-input">Navn:</label>
                         <input id="navn-input" type="text" value={selectedData.navn} /><br />
                         <label htmlFor="organisasjonsnummer-input">Organisasjonsnummer:</label>
-                        <input id="organisasjonsnummer-input" type="text" value={selectedData.organisasjonsnummer} /><br />
+                        <input id="organisasjonsnummer-input" type="text" value={selectedData.organisasjonsnummer.match(/.{1,3}/g).join(" ")} /><br />
                         <label htmlFor="adresse-input">Adresse:</label>
                         <input id="adresse-input" type="text" value={selectedData.forretningsadresse.adresse} /><br />
                         <label htmlFor="postnummer-input">Postnummer:</label>
