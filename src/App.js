@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import './App.css';
-import { ReactSearchAutocomplete } from 'react-search-autocomplete'
+import { ReactSearchAutocomplete } from 'react-search-autocomplete';
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 function App() {
   const dumyDate = [
     {
@@ -113,38 +115,18 @@ function App() {
     ))
     setOrgList(list)
   }, [])
-  const items = [
-    {
-      id: 0,
-      name: 'Cobol'
-    },
-    {
-      id: 1,
-      name: 'JavaScript'
-    },
-    {
-      id: 2,
-      name: 'Basic'
-    },
-    {
-      id: 3,
-      name: 'PHP'
-    },
-    {
-      id: 4,
-      name: 'Java'
-    }
-  ]
+  const [selectedData, setSelectedData] = useState({});
   const handleOnSelect = (item) => {
     // the item selected
+    setSelectedData(item);
     console.log(item)
   }
   const formatResult = (item) => {
     console.log(item);
     return (
       <>
-        <span style={{ display: 'block', textAlign: 'left' }}>Name: {item.name}</span>
-        <span style={{ display: 'block', textAlign: 'left' }}>Number: {item.id}</span>
+        <span style={{ display: 'block', textAlign: 'left' }}>Navn: {item.name}</span>
+        <span style={{ display: 'block', textAlign: 'left' }}>Orgnr: {item.id}</span>
       </>
     )
   }
@@ -155,17 +137,41 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <div style={{ width: 400 }}>
-          <ReactSearchAutocomplete
-            items={orgList}
-            onSearch={handleOnSearch}
-            onSelect={handleOnSelect}
-            autoFocus
-            formatResult={formatResult}
-          />
+        <div className="container">
+          <div className="row">
+            <div className="col-6">
+              <ReactSearchAutocomplete
+                items={orgList}
+                onSearch={handleOnSearch}
+                onSelect={handleOnSelect}
+                autoFocus
+                formatResult={formatResult}
+              />
+            </div>
+            <div className="col-6">
+              {
+                Object.keys(selectedData).length !== 0 ? <div >
+                  <div className="card">
+                    <h3>Nokkelopplysninger fra Enchetsr</h3>
+                    <span><b>Organisasionsnummber:</b> {selectedData.organisasjonsnummer} </span>
+                    <span><b>Navn/foretaksnavn:</b> {selectedData.navn}</span>
+                    <span><b>Organisasjonsform:</b> {selectedData.organisasjonsform.beskrivelse}</span>
+                    <span><b>Forretningsadresse:</b> {`${selectedData.forretningsadresse.land}
+                     ${selectedData.forretningsadresse.landkode} 
+                      ${selectedData.forretningsadresse.postnummer}
+                      ${selectedData.forretningsadresse.poststed}
+                       `}</span>
+                  </div>
+                </div> : ""
+              }
+
+            </div>
+          </div>
         </div>
+
+
       </header>
-    </div>
+    </div >
   );
 }
 
