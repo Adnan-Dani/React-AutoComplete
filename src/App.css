@@ -4,12 +4,11 @@
 * {
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
-  font-family: "Poppins", sans-serif;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif
 }
 
 body {
-  background: #f4f5 !important;
+  background: #1d3c34 !important;
 }
 .card {
   color: black;
@@ -29,6 +28,36 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
   color: white;
+}
+
+.card-body {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  border-radius: 10px;
+  background-color: #f7f7f7;  
+  color: #1d3c34 !important;
+}
+.h3 {
+  font-size: 20px;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 20px;
+  color: #1d3c34 !important;
+}
+.label {
+  font-size: 18px;
+  font-weight: 600;  
+  color: #1d3c34 !important;
+}
+.input {
+  width: 100%;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 12px;
+}
+.input:focus {
+  outline: none;
+  border-color: #47acf5;
 }

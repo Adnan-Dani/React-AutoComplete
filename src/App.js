@@ -4,120 +4,21 @@ import { ReactSearchAutocomplete } from 'react-search-autocomplete';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
-  const dumyDate = [
-    {
-      "organisasjonsnummer": "923449809",
-      "navn": "BREATHE AS",
-      "organisasjonsform": {
-        "kode": "AS",
-        "beskrivelse": "Aksjeselskap",
-        "_links": {
-          "self": {
-            "href": "https://data.brreg.no/enhetsregisteret/api/organisasjonsformer/AS"
-          }
-        }
-      },
-      "registreringsdatoEnhetsregisteret": "2019-09-24",
-      "registrertIMvaregisteret": false,
-      "naeringskode1": {
-        "beskrivelse": "Undervisning innen idrett og rekreasjon",
-        "kode": "85.510"
-      },
-      "antallAnsatte": 0,
-      "forretningsadresse": {
-        "land": "Norge",
-        "landkode": "NO",
-        "postnummer": "1358",
-        "poststed": "JAR",
-        "adresse": [
-          "Voll terrasse 2D"
-        ],
-        "kommune": "BÆRUM",
-        "kommunenummer": "3024"
-      },
-      "stiftelsesdato": "2019-08-27",
-      "institusjonellSektorkode": {
-        "kode": "2100",
-        "beskrivelse": "Private aksjeselskaper mv."
-      },
-      "registrertIForetaksregisteret": true,
-      "registrertIStiftelsesregisteret": false,
-      "registrertIFrivillighetsregisteret": false,
-      "sisteInnsendteAarsregnskap": "2021",
-      "konkurs": false,
-      "underAvvikling": false,
-      "underTvangsavviklingEllerTvangsopplosning": false,
-      "maalform": "Bokmål",
-      "_links": {
-        "self": {
-          "href": "https://data.brreg.no/enhetsregisteret/api/enheter/923449809"
-        }
-      }
-    },
-    {
-      "organisasjonsnummer": "927470721",
-      "navn": "BREATHE IT AS",
-      "organisasjonsform": {
-        "kode": "AS",
-        "beskrivelse": "Aksjeselskap",
-        "_links": {
-          "self": {
-            "href": "https://data.brreg.no/enhetsregisteret/api/organisasjonsformer/AS"
-          }
-        }
-      },
-      "registreringsdatoEnhetsregisteret": "2021-07-27",
-      "registrertIMvaregisteret": true,
-      "naeringskode1": {
-        "beskrivelse": "Konsulentvirksomhet tilknyttet informasjonsteknologi",
-        "kode": "62.020"
-      },
-      "antallAnsatte": 1,
-      "forretningsadresse": {
-        "land": "Norge",
-        "landkode": "NO",
-        "postnummer": "3267",
-        "poststed": "LARVIK",
-        "adresse": [
-          "Lillestien 37"
-        ],
-        "kommune": "LARVIK",
-        "kommunenummer": "3805"
-      },
-      "stiftelsesdato": "2021-06-29",
-      "institusjonellSektorkode": {
-        "kode": "2100",
-        "beskrivelse": "Private aksjeselskaper mv."
-      },
-      "registrertIForetaksregisteret": true,
-      "registrertIStiftelsesregisteret": false,
-      "registrertIFrivillighetsregisteret": false,
-      "sisteInnsendteAarsregnskap": "2021",
-      "konkurs": false,
-      "underAvvikling": false,
-      "underTvangsavviklingEllerTvangsopplosning": false,
-      "maalform": "Bokmål",
-      "_links": {
-        "self": {
-          "href": "https://data.brreg.no/enhetsregisteret/api/enheter/927470721"
-        }
-      }
-
-    }
-  ];
-  useEffect(() => {
-    const list = dumyDate.map(org => (
-      {
-        ...org,
-        name: org.navn,
-        id: org.organisasjonsnummer
-      }
-    ))
-    setOrgList(list)
-  }, [])
+  // const dumyDate = [
+  //   {}, {}
+  // ];
+  // useEffect(() => {
+  //   const list = dumyDate.map(org => (
+  //     {
+  //       ...org,
+  //       name: org.navn,
+  //       id: org.organisasjonsnummer
+  //     }
+  //   ))
+  //   setOrgList(list)
+  // }, [])
   const [selectedData, setSelectedData] = useState({});
   const handleOnSelect = (item) => {
-    // the item selected
     setSelectedData(item);
     console.log(item)
   }
@@ -125,13 +26,24 @@ function App() {
     console.log(item);
     return (
       <>
-        <span style={{ display: 'block', textAlign: 'left' }}>Navn: {item.name}</span>
-        <span style={{ display: 'block', textAlign: 'left' }}>Orgnr: {item.id}</span>
+        <span style={{ display: 'block', textAlign: 'left' }}>{item.name} - {item.id.toLocaleString('nb-NO')}</span>
       </>
     )
   }
   const [orgList, setOrgList] = useState([]);
-  const handleOnSearch = (string, results) => {
+  const handleOnSearch = async (string, results) => {
+    const response = await fetch(`https://data.brreg.no/enhetsregisteret/api/enheter?navn=${string}`);
+    const data = await response.json();
+    const newList = data._embedded?.enheter || [];
+    console.log(newList);
+    if (newList) {
+      const list = newList.map(org => ({
+        ...org,
+        name: org.navn,
+        id: org.organisasjonsnummer
+      }));
+      setOrgList(list);
+    }
   };
 
   return (
@@ -144,35 +56,35 @@ function App() {
                 items={orgList}
                 onSearch={handleOnSearch}
                 onSelect={handleOnSelect}
-                autoFocus
-                formatResult={formatResult}
-              />
+                autoFocus formatResult={formatResult} />
             </div>
             <div className="col-6">
               {
-                Object.keys(selectedData).length !== 0 ? <div >
-                  <div className="card">
-                    <h3>Nokkelopplysninger fra Enchetsr</h3>
-                    <span><b>Organisasionsnummber:</b> {selectedData.organisasjonsnummer} </span>
-                    <span><b>Navn/foretaksnavn:</b> {selectedData.navn}</span>
-                    <span><b>Organisasjonsform:</b> {selectedData.organisasjonsform.beskrivelse}</span>
-                    <span><b>Forretningsadresse:</b> {`${selectedData.forretningsadresse.land}
-                     ${selectedData.forretningsadresse.landkode} 
-                      ${selectedData.forretningsadresse.postnummer}
-                      ${selectedData.forretningsadresse.poststed}
-                       `}</span>
-                  </div>
-                </div> : ""
-              }
+                Object.keys(selectedData).length !== 0 ?
+                  <div>
+                    <div className="card">
+                      <div className="card-body">
+                        <h3>Nøkkelopplysninger fra Enhetsregisteret</h3>
 
-            </div>
+                        <label htmlFor="navn-input">Navn:</label>
+                        <input id="navn-input" type="text" value={selectedData.navn} /><br />
+                        <label htmlFor="organisasjonsnummer-input">Organisasjonsnummer:</label>
+                        <input id="organisasjonsnummer-input" type="text" value={selectedData.organisasjonsnummer} /><br />
+                        <label htmlFor="adresse-input">Adresse:</label>
+                        <input id="adresse-input" type="text" value={selectedData.forretningsadresse.adresse} /><br />
+                        <label htmlFor="postnummer-input">Postnummer:</label>
+                        <input id="postnummer-input" type="text" value={selectedData.forretningsadresse.postnummer} /><br />
+                        <label htmlFor="poststed-input">Poststed:</label>
+                        <input id="poststed-input" type="text" value={selectedData.forretningsadresse.poststed} /><br />
+                        <label htmlFor="land-input">Land:</label>
+                        <input id="land-input" type="text" value={selectedData.forretningsadresse.land} /><br />
+                      </div>
+                    </div>
+                  </div> : null} </div>
           </div>
         </div>
-
-
       </header>
-    </div >
-  );
+    </div>);
 }
 
 export default App;
